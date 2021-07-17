@@ -1,0 +1,13 @@
+#plt {
+    position: relative;
+}
+.plot-container {
+    width: 100%;
+    height: 100%;
+}
+.test-button {
+    background-color: brown;
+    position: absolute;
+    top: 1%;
+    right: 1%;
+}
