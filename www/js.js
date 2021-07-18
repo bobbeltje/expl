@@ -1,8 +1,49 @@
 var n = 400;
 var data = {};
+new_data();
 var counter = 0;
 
 function explore(){
+    make_panel();
+}
+
+function make_panel(){
+    let selDiv = make_selection_div();
+    let el = document.getElementById('plt');
+    el.replaceChildren(selDiv);
+}
+
+function make_selection_div(){
+
+    let x = document.createElement('ul');
+    let y = document.createElement('ul');
+    Object.keys(data).forEach(key => {
+        var li1 = document.createElement('li');
+        li1.innerText = key;
+        x.appendChild(li1);
+        var li2 = document.createElement('li');
+        li2.innerText = key;
+        y.appendChild(li2);
+    });
+
+    let c1 = document.createElement('div');
+    c1.style.width = '50%';
+    c1.style.display = 'inline-block';
+    c1.innerText = 'x:';
+    c1.appendChild(x);
+    let c2 = document.createElement('div');
+    c2.style.width = '50%';
+    c2.style.display = 'inline-block';
+    c1.innerText = 'y:';
+    c2.appendChild(y);
+    
+    let p = document.createElement('div');
+    p.appendChild(c1);
+    p.appendChild(c2);
+    return p;
+}
+
+function make_plot_div(){
     new_data();
     let gd = document.getElementById('plt');
 
@@ -26,6 +67,7 @@ function explore(){
     
     gd.replaceChildren(pd, bd);
     plot();
+
 }
 
 function random_letters(n){
