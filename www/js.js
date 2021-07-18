@@ -1,7 +1,12 @@
 var n = 400;
 var data = {};
 new_data();
+var selection = {};
 var counter = 0;
+
+function clear_selection(){
+    selection = {};
+}
 
 function explore(){
     make_panel();
@@ -9,8 +14,13 @@ function explore(){
 
 function make_panel(){
     let selDiv = make_selection_div();
+    selDiv.id = 'sd';
+    let plotDiv = document.createElement('div');
+    plotDiv.id = 'pd';
+    plotDiv.style.display = 'none';
+    
     let el = document.getElementById('plt');
-    el.replaceChildren(selDiv);
+    el.replaceChildren(selDiv, plotDiv);
 }
 
 function make_selection_div(){
@@ -20,9 +30,17 @@ function make_selection_div(){
     Object.keys(data).forEach(key => {
         var li1 = document.createElement('li');
         li1.innerText = key;
+        li1.addEventListener('click', e => {
+            selection.x = [e.target.textContent];
+            try_plot();
+        });
         x.appendChild(li1);
         var li2 = document.createElement('li');
         li2.innerText = key;
+        li2.addEventListener('click', e => {
+            selection.y = [e.target.textContent];
+            try_plot();
+        });
         y.appendChild(li2);
     });
 
@@ -34,7 +52,7 @@ function make_selection_div(){
     let c2 = document.createElement('div');
     c2.style.width = '50%';
     c2.style.display = 'inline-block';
-    c1.innerText = 'y:';
+    c2.innerText = 'y:';
     c2.appendChild(y);
     
     let p = document.createElement('div');
@@ -45,7 +63,7 @@ function make_selection_div(){
 
 function make_plot_div(){
     new_data();
-    let gd = document.getElementById('plt');
+    let gd = document.getElementById('pd');
 
     // plot div
     let pd = document.createElement('div');
@@ -62,6 +80,8 @@ function make_plot_div(){
             console.log(counter += 1);
             document.getElementById('tmp').remove();
             document.querySelector('.test-button').remove();
+            clear_selection();
+            make_panel();
         }
     );
     
@@ -95,8 +115,8 @@ function plot(){
     let d = [{
         type: 'scatter',
         mode: 'markers',
-        x: data.x,
-        y: data.y,
+        x: data[selection.x],
+        y: data[selection.y],
         marker: {
             color: data.z,
             showscale: true
@@ -109,4 +129,12 @@ function plot(){
     }
 
     Plotly.newPlot(gd, d, l, c)
+}
+
+function try_plot(){
+    if (selection.hasOwnProperty('x') && selection.hasOwnProperty('y')){
+        make_plot_div();
+        document.getElementById('sd').style.display = 'none';
+        document.getElementById('pd').style.display = '';
+    }
 }
