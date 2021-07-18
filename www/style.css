@@ -1,13 +1,37 @@
-#plt {
-    position: relative;
-}
-.plot-container {
+.fill {
     width: 100%;
     height: 100%;
 }
-.test-button {
-    background-color: brown;
+/* selection div */
+li {
+    cursor: pointer;
+    list-style: none;
+}
+li:hover {
+    background-color: burlywood;
+}
+.selected {
+    background-color:dodgerblue;
+}
+/* plot div */
+#plt {
+    position: relative;
+}
+.plot-button {
+    cursor: pointer;
+    background-color: rgb(95, 186, 247);
     position: absolute;
+    border-radius: 50%;
+}
+.plot-x {
+    top: 50%;
+    left: 1%;
+}
+.plot-y {
+    bottom: 1%;
+    left: 50%;
+}
+.plot-tr {
     top: 1%;
     right: 1%;
 }

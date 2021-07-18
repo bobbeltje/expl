@@ -2,7 +2,6 @@ var n = 400;
 var data = {};
 new_data();
 var selection = {};
-var counter = 0;
 
 function clear_selection(){
     selection = {};
@@ -13,8 +12,10 @@ function explore(){
 }
 
 function make_panel(){
+
     let selDiv = make_selection_div();
     selDiv.id = 'sd';
+    
     let plotDiv = document.createElement('div');
     plotDiv.id = 'pd';
     plotDiv.style.display = 'none';
@@ -32,6 +33,10 @@ function make_selection_div(){
         li1.innerText = key;
         li1.addEventListener('click', e => {
             selection.x = [e.target.textContent];
+            Array.from(e.target.parentNode.children).forEach(child => {
+                child.className = '';
+            })
+            e.target.className = 'selected';
             try_plot();
         });
         x.appendChild(li1);
@@ -39,6 +44,10 @@ function make_selection_div(){
         li2.innerText = key;
         li2.addEventListener('click', e => {
             selection.y = [e.target.textContent];
+            Array.from(e.target.parentNode.children).forEach(child => {
+                child.className = '';
+            })
+            e.target.className = 'selected';
             try_plot();
         });
         y.appendChild(li2);
@@ -56,30 +65,29 @@ function make_selection_div(){
     c2.appendChild(y);
     
     let p = document.createElement('div');
+    p.className = 'fill';
     p.appendChild(c1);
     p.appendChild(c2);
     return p;
 }
 
 function make_plot_div(){
-    new_data();
+    
     let gd = document.getElementById('pd');
 
     // plot div
     let pd = document.createElement('div');
     pd.id = 'tmp';
-    pd.className = 'plot-container';
+    pd.className = 'fill';
 
     // close button
     let bd = document.createElement('button');
-    bd.className = 'test-button';
+    bd.className = 'plot-button plot-tr';
     bd.innerText = 'x';
     bd.addEventListener(
         'click',
         () => {
-            console.log(counter += 1);
-            document.getElementById('tmp').remove();
-            document.querySelector('.test-button').remove();
+            gd.replaceChildren();
             clear_selection();
             make_panel();
         }
@@ -87,7 +95,6 @@ function make_plot_div(){
     
     gd.replaceChildren(pd, bd);
     plot();
-
 }
 
 function random_letters(n){
@@ -111,7 +118,7 @@ function new_data(){
 
 function plot(){
     let gd = document.getElementById('tmp');
-
+    
     let d = [{
         type: 'scatter',
         mode: 'markers',
@@ -123,6 +130,9 @@ function plot(){
         }
     }]
     let l = {
+        width: 600,
+        height: 400,
+        margin: { l: 30, r: 30, t: 30, b: 30 }
     }
     let c = {
         displayModeBar: false
