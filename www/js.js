@@ -1,9 +1,5 @@
 var n = 400;
-var data = {
-    y: [...Array(n)].map(_ => Math.ceil(Math.random() * n)),
-    x: [...Array(n)].map(_ => Math.ceil(Math.random() * n)),
-    z: [...Array(n)].map(_ => Math.ceil(Math.random() * n))
-}
+var data = {};
 var counter = 0;
 
 function explore(){
@@ -32,10 +28,23 @@ function explore(){
     plot();
 }
 
+function random_letters(n){
+    let letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    let index = [...Array(n)].map(_ => Math.floor(Math.random() * 26));
+    return index.map(i => letters[i]);
+}
+
+function random_numbers(n){
+    return [...Array(n)].map(_ => Math.ceil(Math.random() * n));
+}
+
 function new_data(){
-    data.x = [...Array(n)].map(_ => Math.ceil(Math.random() * n));
-    data.y = [...Array(n)].map(_ => Math.ceil(Math.random() * n));
-    data.z = [...Array(n)].map(_ => Math.ceil(Math.random() * n));
+    data.a = random_letters(n);
+    data.b = random_letters(n);
+    data.c = random_letters(n);
+    data.x = random_numbers(n);
+    data.y = random_numbers(n);
+    data.z = random_numbers(n);
 }
 
 function plot(){
