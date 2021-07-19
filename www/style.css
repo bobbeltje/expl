@@ -41,3 +41,20 @@ li:hover {
     top: 1%;
     right: 1%;
 }
+.plot-modal {
+    top: 15%;
+    left: 15%;
+    width: 70%;
+    height: 70%;
+    border-radius: 10%;
+    position: absolute;
+    background-color: #dddddd;
+}
+.var-names {
+    width: 40%;
+    display: inline-block;
+}
+.var-values {
+    width: 40%;
+    display: inline-block;
+}

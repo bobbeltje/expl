@@ -2,6 +2,7 @@ var n = 400;
 var data = {};
 new_data();
 var selection = {};
+var filters = {};
 
 document.addEventListener('click', () => {
     let arr = document.querySelectorAll('.rm-on-click');
@@ -90,7 +91,13 @@ function make_plot_div(){
     // top right
     let tr = document.createElement('div');
     tr.className = 'plot-tr';
-
+    // filter
+    let fltr = document.createElement('button');
+    fltr.className = 'plot-button';
+    fltr.innerText = 'f';
+    fltr.addEventListener('click', () => show_filter_modal());
+    tr.appendChild(fltr);
+    // colour
     let col = document.createElement('button');
     col.className = 'plot-button';
     col.innerText = 'c';
@@ -122,7 +129,7 @@ function make_plot_div(){
         
     });
     tr.appendChild(col);
-
+    // close
     let bd = document.createElement('button');
     bd.className = 'plot-button';
     bd.innerText = 'x';
@@ -245,6 +252,39 @@ function plot(){
     }
 
     Plotly.newPlot(gd, d, l, c)
+}
+
+function show_filter_modal(){
+    
+    let d = document.createElement('div');
+    d.className = 'plot-modal';
+
+    // variable names
+    let var_names = document.createElement('ul');
+    var_names.className = 'var-names';
+    Object.keys(data).forEach(key => {
+        var li2 = document.createElement('li');
+        li2.innerText = key;
+        li2.addEventListener('click', e => {
+            Array.from(e.target.parentNode.children).forEach(child => {
+                child.className = '';
+            })
+            e.target.className = 'selected';
+            update_var_values(e.target.innerText);
+        });
+        var_names.appendChild(li2);
+    });
+    d.appendChild(var_names);
+
+    // variable values
+    let var_values = document.createElement('div');
+    var_values.className = 'var-values';
+    d.appendChild(var_values);
+
+    document.getElementById('plt').appendChild(d);
+}
+
+function update_var_values(x){
 }
 
 function try_plot(){
