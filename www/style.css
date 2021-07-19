@@ -53,8 +53,12 @@ li:hover {
 .var-names {
     width: 40%;
     display: inline-block;
+    vertical-align: top;;
 }
 .var-values {
     width: 40%;
     display: inline-block;
+}
+.scrollable {
+  overflow-y: scroll;
 }

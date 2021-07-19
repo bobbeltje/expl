@@ -285,6 +285,76 @@ function show_filter_modal(){
 }
 
 function update_var_values(x){
+        
+    let d = document.createElement('div');
+
+    if (typeof data[x][0] == 'number'){
+
+        let lbl = document.createElement('label');
+        lbl.for = 'lwr';
+        lbl.innerText = 'Lower Limit:'
+        let inp = document.createElement('input');
+        inp.type = 'number';
+        inp.name = 'lwr'
+        inp.value = filters[x] ? filters[x].lwr || Math.min(...data[x]) : Math.min(...data[x]);
+        inp.addEventListener('change', e => {
+            let val = +e.target.value;
+            if (typeof val != 'number') return;
+            if (typeof filters[x] == 'object'){
+                filters[x].lwr = val;
+            } else {
+                filters[x] = { lwr: val };
+            }
+        })
+
+        let lbl2 = document.createElement('label');
+        lbl2.for = 'upr';
+        lbl2.innerText = 'Lower Limit:'
+        let inp2 = document.createElement('input');
+        inp2.type = 'number';
+        inp2.name = 'upr'
+        inp2.value = filters[x] ? filters[x].upr || Math.max(...data[x]) : Math.max(...data[x]);
+        inp2.addEventListener('change', e => {
+            let val = +e.target.value;
+            if (typeof val != 'number') return;
+            if (typeof filters[x] == 'object'){
+                filters[x].upr = val;
+            } else {
+                filters[x] = { upr: val };
+            }
+        })
+
+        d.replaceChildren(lbl, inp, lbl2, inp2);
+        document.querySelector('.var-values').replaceChildren(d);
+
+    } else {
+
+        let ul = document.createElement('ul');
+        ul.className = 'scrollable';
+        ul.style.height = document.querySelector('.plot-modal').getBoundingClientRect().height + 'px';
+
+        let uniques = [...new Set(data[x])].sort();
+        uniques.forEach(val => {
+            var li = document.createElement('li');
+            li.innerText = val;
+            if (filters[x] && filters[x].has(val)) li.className = 'selected';
+            li.addEventListener('click', e => {
+                z = e;
+                let val = e.target.innerText;
+                e.target.classList.toggle('selected');
+                if (typeof filters[x] != 'object') filters[x] = new Set();
+                if (e.target.classList.contains('selected')) {
+                    filters[x].add(val);
+                } else {
+                    filters[x].delete(val);
+                }
+            });
+            ul.appendChild(li);
+        });
+
+        d.replaceChildren(ul);
+        document.querySelector('.var-values').replaceChildren(d);
+    }
 }
 
 function try_plot(){
