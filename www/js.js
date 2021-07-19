@@ -92,8 +92,35 @@ function make_plot_div(){
             make_panel();
         }
     );
+
+    // y
+    let y = document.createElement('button');
+    y.className = 'plot-button plot-y';
+    y.innerText = 'y';
+    y.addEventListener('click', e => {
+
+        let l = document.createElement('ul');
+        Object.keys(data).forEach(key => {
+            var li2 = document.createElement('li');
+            li2.innerText = key;
+            li2.addEventListener('click', e => {
+                selection.y = [e.target.textContent];
+                try_plot();
+            });
+            l.appendChild(li2);
+        });
+
+        let d = document.createElement('div');
+        d.style.position = 'fixed';
+        d.style.top = y.getBoundingClientRect().y + 'px';
+        d.style.left = y.getBoundingClientRect().right + 'px';
+        d.style.borderRadius = '5%';
+        d.style.backgroundColor = '#ccc';
+        d.appendChild(l);
+        gd.appendChild(d);
+    });
     
-    gd.replaceChildren(pd, bd);
+    gd.replaceChildren(pd, bd, y);
     plot();
 }
 

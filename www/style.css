@@ -3,6 +3,10 @@
     height: 100%;
 }
 /* selection div */
+ul {
+    padding: 10px;
+    margin: 0;
+}
 li {
     cursor: pointer;
     list-style: none;
@@ -23,11 +27,11 @@ li:hover {
     position: absolute;
     border-radius: 50%;
 }
-.plot-x {
+.plot-y {
     top: 50%;
     left: 1%;
 }
-.plot-y {
+.plot-x {
     bottom: 1%;
     left: 50%;
 }
