@@ -3,6 +3,13 @@ var data = {};
 new_data();
 var selection = {};
 
+document.addEventListener('click', () => {
+    let arr = document.querySelectorAll('.rm-on-click');
+    Array.from(arr).forEach(el => {
+        el.remove();
+    });
+});
+
 function clear_selection(){
     selection = {};
 }
@@ -118,6 +125,10 @@ function make_plot_div(){
         d.style.backgroundColor = '#ccc';
         d.appendChild(l);
         gd.appendChild(d);
+
+        setTimeout(() => {
+            d.className = 'rm-on-click';
+        }, 0);
     });
     
     gd.replaceChildren(pd, bd, y);
