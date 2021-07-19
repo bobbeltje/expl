@@ -87,18 +87,51 @@ function make_plot_div(){
     pd.id = 'tmp';
     pd.className = 'fill';
 
-    // close button
+    // top right
+    let tr = document.createElement('div');
+    tr.className = 'plot-tr';
+
+    let col = document.createElement('button');
+    col.className = 'plot-button';
+    col.innerText = 'c';
+    col.addEventListener('click', () => {
+        
+        let l = document.createElement('ul');
+        Object.keys(data).forEach(key => {
+            var li2 = document.createElement('li');
+            li2.innerText = key;
+            li2.addEventListener('click', e => {
+                selection.c = e.target.textContent;
+                try_plot();
+            });
+            l.appendChild(li2);
+        });
+
+        let d = document.createElement('div');
+        d.style.position = 'fixed';
+        d.style.top = col.getBoundingClientRect().bottom + 'px';
+        d.style.left = col.getBoundingClientRect().left + 'px';
+        d.style.borderRadius = '5%';
+        d.style.backgroundColor = '#ccc';
+        d.appendChild(l);
+        gd.appendChild(d);
+
+        setTimeout(() => {
+            d.className = 'rm-on-click';
+        }, 0);
+        
+    });
+    tr.appendChild(col);
+
     let bd = document.createElement('button');
-    bd.className = 'plot-button plot-tr';
+    bd.className = 'plot-button';
     bd.innerText = 'x';
-    bd.addEventListener(
-        'click',
-        () => {
-            gd.replaceChildren();
-            clear_selection();
-            make_panel();
-        }
-    );
+    bd.addEventListener('click', () => {
+        gd.replaceChildren();
+        clear_selection();
+        make_panel();
+    });
+    tr.appendChild(bd);
 
     // y
     let y = document.createElement('button');
@@ -111,7 +144,7 @@ function make_plot_div(){
             var li2 = document.createElement('li');
             li2.innerText = key;
             li2.addEventListener('click', e => {
-                selection.y = [e.target.textContent];
+                selection.y = e.target.textContent;
                 try_plot();
             });
             l.appendChild(li2);
@@ -142,7 +175,7 @@ function make_plot_div(){
             var li2 = document.createElement('li');
             li2.innerText = key;
             li2.addEventListener('click', e => {
-                selection.x = [e.target.textContent];
+                selection.x = e.target.textContent;
                 try_plot();
             });
             l.appendChild(li2);
@@ -162,7 +195,7 @@ function make_plot_div(){
         }, 0);
     });
 
-    gd.replaceChildren(pd, bd, y, x);
+    gd.replaceChildren(pd, tr, y, x);
     plot();
 }
 
@@ -193,10 +226,14 @@ function plot(){
         mode: 'markers',
         x: data[selection.x],
         y: data[selection.y],
-        marker: {
-            color: data.z,
+        marker: selection.c && typeof data[selection.c][0] == 'number' ? {
+            color: data[selection.c],
             showscale: true
-        }
+        } : {},
+        transforms: selection.c && typeof data[selection.c][0] == 'string' ? [{
+            type: 'groupby',
+            groups: data[selection.c]
+        }] : {}
     }]
     let l = {
         width: 600,

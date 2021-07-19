@@ -24,18 +24,20 @@ li:hover {
 .plot-button {
     cursor: pointer;
     background-color: rgb(95, 186, 247);
-    position: absolute;
     border-radius: 50%;
 }
 .plot-y {
+    position: absolute;
     top: 50%;
     left: 1%;
 }
 .plot-x {
+    position: absolute;
     bottom: 1%;
     left: 50%;
 }
 .plot-tr {
+    position: absolute;
     top: 1%;
     right: 1%;
 }
