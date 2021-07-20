@@ -1,8 +1,10 @@
 var n = 400;
 var data = {};
-new_data();
+var d = {};
 var selection = {};
 var filters = {};
+new_data();
+subset_data();
 
 document.addEventListener('click', () => {
     let arr = document.querySelectorAll('.rm-on-click');
@@ -228,18 +230,18 @@ function new_data(){
 function plot(){
     let gd = document.getElementById('tmp');
     
-    let d = [{
+    let df = [{
         type: 'scatter',
         mode: 'markers',
-        x: data[selection.x],
-        y: data[selection.y],
-        marker: selection.c && typeof data[selection.c][0] == 'number' ? {
-            color: data[selection.c],
+        x: d[selection.x],
+        y: d[selection.y],
+        marker: selection.c && typeof d[selection.c][0] == 'number' ? {
+            color: d[selection.c],
             showscale: true
         } : {},
-        transforms: selection.c && typeof data[selection.c][0] == 'string' ? [{
+        transforms: selection.c && typeof d[selection.c][0] == 'string' ? [{
             type: 'groupby',
-            groups: data[selection.c]
+            groups: d[selection.c]
         }] : {}
     }]
     let l = {
@@ -251,7 +253,7 @@ function plot(){
         displayModeBar: false
     }
 
-    Plotly.newPlot(gd, d, l, c)
+    Plotly.newPlot(gd, df, l, c)
 }
 
 function show_filter_modal(){
@@ -284,6 +286,29 @@ function show_filter_modal(){
     document.getElementById('plt').appendChild(d);
 }
 
+function subset_data(){
+    let rm_idx = new Set();
+    Object.keys(filters).forEach(key => {
+        if (typeof data[key][0] == 'number'){
+            for (let i = 0; i < data[key].length; ++i){
+                if (filters[key].lwr && data[key][i] < filters[key].lwr) rm_idx.add(i);
+                if (filters[key].upr && data[key][i] > filters[key].lwr) rm_idx.add(i);
+            }
+        } else {
+            for (let i = 0; i < data[key].length; ++i){
+                if (! filters[key].has(data[key][i])) rm_idx.add(i);
+            }
+        }
+    });
+    let n = data[Object.keys(data)[0]].length;
+    let row_nums = new Set([...Array(n).keys()]);
+    rm_idx.forEach(i => row_nums.delete(i));
+    let a = Array.from(row_nums);
+    Object.keys(data).forEach(key => {
+        d[key] = a.map(i => data[key][i]);
+    });
+}
+
 function update_var_values(x){
         
     let d = document.createElement('div');
@@ -305,6 +330,8 @@ function update_var_values(x){
             } else {
                 filters[x] = { lwr: val };
             }
+            subset_data();
+            plot();
         })
 
         let lbl2 = document.createElement('label');
@@ -322,6 +349,8 @@ function update_var_values(x){
             } else {
                 filters[x] = { upr: val };
             }
+            subset_data();
+            plot();
         })
 
         d.replaceChildren(lbl, inp, lbl2, inp2);
@@ -348,6 +377,8 @@ function update_var_values(x){
                 } else {
                     filters[x].delete(val);
                 }
+                subset_data();
+                plot();
             });
             ul.appendChild(li);
         });
