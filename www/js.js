@@ -13,6 +13,19 @@ document.addEventListener('click', () => {
     });
 });
 
+document.addEventListener('keyup', e => {
+    let pd = document.getElementById('pd');
+    if (pd.style.display == 'none') return;
+    if (e.key === 'f'){
+        let modal = document.querySelector('.plot-modal');
+        if (modal === null){
+            show_filter_modal();
+        } else {
+            modal.remove();
+        }
+    }
+});
+
 function clear_selection(){
     selection = {};
 }
