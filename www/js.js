@@ -295,6 +295,7 @@ function subset_data(){
                 if (filters[key].upr && data[key][i] > filters[key].lwr) rm_idx.add(i);
             }
         } else {
+            if (!filters[key].size) return;
             for (let i = 0; i < data[key].length; ++i){
                 if (! filters[key].has(data[key][i])) rm_idx.add(i);
             }
@@ -368,14 +369,25 @@ function update_var_values(x){
             li.innerText = val;
             if (filters[x] && filters[x].has(val)) li.className = 'selected';
             li.addEventListener('click', e => {
-                z = e;
                 let val = e.target.innerText;
-                e.target.classList.toggle('selected');
-                if (typeof filters[x] != 'object') filters[x] = new Set();
-                if (e.target.classList.contains('selected')) {
-                    filters[x].add(val);
+                if (e.ctrlKey){
+                    e.target.classList.toggle('selected');
+                    if (typeof filters[x] != 'object') filters[x] = new Set();
+                    if (e.target.classList.contains('selected')) {
+                        filters[x].add(val);
+                    } else {
+                        filters[x].delete(val);
+                    }
                 } else {
-                    filters[x].delete(val);
+                    let select_it = !e.target.classList.contains('selected');
+                    Array.from(e.target.parentNode.children).forEach(child => {
+                        child.className = '';
+                    });
+                    filters[x] = new Set();
+                    if (select_it) {
+                        e.target.className = 'selected';
+                        filters[x].add(val);
+                    }
                 }
                 subset_data();
                 plot();
