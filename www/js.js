@@ -6,16 +6,22 @@ var filters = {};
 new_data();
 subset_data();
 
-document.addEventListener('click', () => {
+function rm_modals(){
     let arr = document.querySelectorAll('.rm-on-click');
     Array.from(arr).forEach(el => {
         el.remove();
     });
-});
+}
+
+document.addEventListener('click', rm_modals);
 
 document.addEventListener('keyup', e => {
     let pd = document.getElementById('pd');
     if (pd.style.display == 'none') return;
+    if (e.key === 'c'){
+        rm_modals();
+        show_col_modal();
+    }
     if (e.key === 'f'){
         let modal = document.querySelector('.plot-modal');
         if (modal === null){
@@ -23,6 +29,14 @@ document.addEventListener('keyup', e => {
         } else {
             modal.remove();
         }
+    }
+    if (e.key === 'x'){
+        rm_modals();
+        show_x_modal();
+    }
+    if (e.key === 'y'){
+        rm_modals();
+        show_y_modal();
     }
 });
 
@@ -114,35 +128,9 @@ function make_plot_div(){
     tr.appendChild(fltr);
     // colour
     let col = document.createElement('button');
-    col.className = 'plot-button';
+    col.className = 'plot-button colour';
     col.innerText = 'c';
-    col.addEventListener('click', () => {
-        
-        let l = document.createElement('ul');
-        Object.keys(data).forEach(key => {
-            var li2 = document.createElement('li');
-            li2.innerText = key;
-            li2.addEventListener('click', e => {
-                selection.c = e.target.textContent;
-                try_plot();
-            });
-            l.appendChild(li2);
-        });
-
-        let d = document.createElement('div');
-        d.style.position = 'fixed';
-        d.style.top = col.getBoundingClientRect().bottom + 'px';
-        d.style.left = col.getBoundingClientRect().left + 'px';
-        d.style.borderRadius = '5%';
-        d.style.backgroundColor = '#ccc';
-        d.appendChild(l);
-        gd.appendChild(d);
-
-        setTimeout(() => {
-            d.className = 'rm-on-click';
-        }, 0);
-        
-    });
+    col.addEventListener('click', show_col_modal);
     tr.appendChild(col);
     // close
     let bd = document.createElement('button');
@@ -159,63 +147,13 @@ function make_plot_div(){
     let y = document.createElement('button');
     y.className = 'plot-button plot-y';
     y.innerText = 'y';
-    y.addEventListener('click', () => {
-
-        let l = document.createElement('ul');
-        Object.keys(data).forEach(key => {
-            var li2 = document.createElement('li');
-            li2.innerText = key;
-            li2.addEventListener('click', e => {
-                selection.y = e.target.textContent;
-                try_plot();
-            });
-            l.appendChild(li2);
-        });
-
-        let d = document.createElement('div');
-        d.style.position = 'fixed';
-        d.style.top = y.getBoundingClientRect().y + 'px';
-        d.style.left = y.getBoundingClientRect().right + 'px';
-        d.style.borderRadius = '5%';
-        d.style.backgroundColor = '#ccc';
-        d.appendChild(l);
-        gd.appendChild(d);
-
-        setTimeout(() => {
-            d.className = 'rm-on-click';
-        }, 0);
-    });
+    y.addEventListener('click', show_y_modal);
 
     // x
     let x = document.createElement('button');
     x.className = 'plot-button plot-x';
     x.innerText = 'x';
-    x.addEventListener('click', () => {
-
-        let l = document.createElement('ul');
-        Object.keys(data).forEach(key => {
-            var li2 = document.createElement('li');
-            li2.innerText = key;
-            li2.addEventListener('click', e => {
-                selection.x = e.target.textContent;
-                try_plot();
-            });
-            l.appendChild(li2);
-        });
-
-        let d = document.createElement('div');
-        d.style.position = 'fixed';
-        d.style.bottom = window.innerHeight - x.getBoundingClientRect().top + 'px';
-        d.style.left = x.getBoundingClientRect().left + 'px';
-        d.style.borderRadius = '5%';
-        d.style.backgroundColor = '#ccc';
-        d.appendChild(l);
-        gd.appendChild(d);
-
-        setTimeout(() => {
-            d.className = 'rm-on-click';
-        }, 0);
-    });
+    x.addEventListener('click', show_x_modal);
 
     gd.replaceChildren(pd, tr, y, x);
     plot();
@@ -269,6 +207,34 @@ function plot(){
     Plotly.newPlot(gd, df, l, c)
 }
 
+function show_col_modal(){
+        
+    let l = document.createElement('ul');
+    Object.keys(data).forEach(key => {
+        var li2 = document.createElement('li');
+        li2.innerText = key;
+        li2.addEventListener('click', e => {
+            selection.c = e.target.textContent;
+            try_plot();
+        });
+        l.appendChild(li2);
+    });
+
+    let d = document.createElement('div');
+    let col = document.querySelector('.plot-button.colour');
+    d.style.position = 'fixed';
+    d.style.top = col.getBoundingClientRect().bottom + 'px';
+    d.style.left = col.getBoundingClientRect().left + 'px';
+    d.style.borderRadius = '5%';
+    d.style.backgroundColor = '#ccc';
+    d.appendChild(l);
+    document.getElementById('pd').appendChild(d);
+
+    setTimeout(() => {
+        d.className = 'rm-on-click';
+    }, 0);
+}
+
 function show_filter_modal(){
     
     let d = document.createElement('div');
@@ -297,6 +263,62 @@ function show_filter_modal(){
     d.appendChild(var_values);
 
     document.getElementById('plt').appendChild(d);
+}
+
+function show_x_modal(){
+
+    let l = document.createElement('ul');
+    Object.keys(data).forEach(key => {
+        var li2 = document.createElement('li');
+        li2.innerText = key;
+        li2.addEventListener('click', e => {
+            selection.x = e.target.textContent;
+            try_plot();
+        });
+        l.appendChild(li2);
+    });
+
+    let d = document.createElement('div');
+    let x = document.querySelector('.plot-button.plot-x');
+    d.style.position = 'fixed';
+    d.style.bottom = window.innerHeight - x.getBoundingClientRect().top + 'px';
+    d.style.left = x.getBoundingClientRect().left + 'px';
+    d.style.borderRadius = '5%';
+    d.style.backgroundColor = '#ccc';
+    d.appendChild(l);
+    document.getElementById('pd').appendChild(d);
+
+    setTimeout(() => {
+        d.className = 'rm-on-click';
+    }, 0);
+}
+
+function show_y_modal(){
+
+    let l = document.createElement('ul');
+    Object.keys(data).forEach(key => {
+        var li2 = document.createElement('li');
+        li2.innerText = key;
+        li2.addEventListener('click', e => {
+            selection.y = e.target.textContent;
+            try_plot();
+        });
+        l.appendChild(li2);
+    });
+
+    let d = document.createElement('div');
+    let y = document.querySelector('.plot-button.plot-y');
+    d.style.position = 'fixed';
+    d.style.top = y.getBoundingClientRect().y + 'px';
+    d.style.left = y.getBoundingClientRect().right + 'px';
+    d.style.borderRadius = '5%';
+    d.style.backgroundColor = '#ccc';
+    d.appendChild(l);
+    document.getElementById('pd').appendChild(d);
+
+    setTimeout(() => {
+        d.className = 'rm-on-click';
+    }, 0);
 }
 
 function subset_data(){
